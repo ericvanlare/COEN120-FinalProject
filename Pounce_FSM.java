@@ -1,3 +1,5 @@
+/* thread that implements the state machine for Pounce: runs inside of the Pounce_Behavior thread */
+
 /*
  *
  *The robot sits in one place until an object comes close and triggers off its IR sensors. 

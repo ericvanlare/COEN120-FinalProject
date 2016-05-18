@@ -1,4 +1,13 @@
+/* thread that implements the state machine for Home: runs inside of the Home_Behavior thread */
+
 public class Home_FSM implements Runnable {
+    
+    //Physical Peripherals
+    Navigator mNavigator;
+    Localizer mLocalizer;
+    
+    Pose mCurrentPose;
+    Pose mHome;//destination
 
 	//STATE VARIABLES
 	private volatile int currentState;
@@ -14,13 +23,20 @@ public class Home_FSM implements Runnable {
 	final int NULL = 2;
 	
 
-	public Home_FSM(Navigator navigator, Localizer localizer, int homeX, int homeY) {
+	public Home_FSM(Navigator navigator, Localizer localizer, Pose home) {
+        //setting physical peripheral control and destination
+        mNavigator = navigator;
+        mLocalizer = localizer;
+        mCurrentPose = mLocalizer.getPose();//get current pos
+        mHome = home;
+        
+        //setting initial state and event
 		currentState = NAVIGATE;
 		currentEvent = NULL;
 	}
 
 	public void run() {
-		while (position != home) {
+		while (mCurrentPose != mHome) {
 			switch (currentState) {
 				case NAVIGATE:
                     //go towards the end point
@@ -47,6 +63,7 @@ public class Home_FSM implements Runnable {
 					} catch (InterruptException e) {}
 					break;
 			}
+            
 		}
 	}
     

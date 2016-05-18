@@ -1,5 +1,5 @@
-import com.ridgesoft.intellibrain.IntelliBrain; import com.ridgesoft.robotics.sensors.SharpGP2D12;
-
+import com.ridgesoft.intellibrain.IntelliBrain; 
+import com.ridgesoft.robotics.sensors.SharpGP2D12;
 /*
  *  
  * Initializes the left and right IR sensors.  
@@ -8,13 +8,33 @@ import com.ridgesoft.intellibrain.IntelliBrain; import com.ridgesoft.robotics.se
  *  
  *  
  * @author J.P. Ertola and Paul Thurston  
+ 
+    this would work only for home/might need to make another IR class for pounce based on this 
+ 
+ 	//STATE VARIABLES
+	final int NAVIGATE = 0;
+	final int BACKUP_SPIN_LEFT = 1;
+	final int BACKUP_SPIN_RIGHT = 2;
+	final int FORWARD = 3;
+
+	//EVENT VARIABLES
+	final int IR_LEFT = 0;
+	final int IR_RIGHT = 1;
+	final int NULL = 2;
+ 
  *  
  */ 
 public class IRSensor extends Thread {
-    private BlockingQueue mBuf; private float mThreshold; private int mPeriod;
-    private SharpGP2D12 rangeFinderLeft; private SharpGP2D12 rangeFinderRight;
+    private BlockingQueue mBuf; 
+    private float mThreshold; 
+    private int mPeriod;
+    private SharpGP2D12 rangeFinderLeft; 
+    private SharpGP2D12 rangeFinderRight;
+    
     public IRSensor(BlockingQueue buf, float threshold, int priority, int period){
-        mBuf = buf; mThreshold = threshold; mPeriod = period;
+        mBuf = buf; 
+        mThreshold = threshold; 
+        mPeriod = period;
         
         try{ 
             rangeFinderLeft = new SharpGP2D12(IntelliBrain.getAnalogInput(1), null);
@@ -30,22 +50,30 @@ public class IRSensor extends Thread {
 	public void run(){
         try{
 			while(true){
-				rangeFinderLeft.ping(); float distanceLeft = rangeFinderLeft.getDistanceInches();
-				rangeFinderRight.ping(); float distanceRight = rangeFinderRight.getDistanceInches();
-				if(distanceLeft < mThreshold && distanceLeft > 0){ mBuf.put(Home_FSM.BACKUP_TURNRIGHT); }
+				rangeFinderLeft.ping(); 
+                float distanceLeft = rangeFinderLeft.getDistanceInches();
+				rangeFinderRight.ping(); 
+                float distanceRight = rangeFinderRight.getDistanceInches();
+				if(distanceLeft < mThreshold && distanceLeft > 0){ 
+                    mBuf.put(Home_FSM.BACKUP_SPIN_RIGHT); 
+                }
+                
 				if(distanceRight < mThreshold && distanceRight > 0){
-					mBuf.put(Home_FSM.BACKUP_TURNLEFT);
-				} Thread.sleep(mPeriod);
+					mBuf.put(Home_FSM.BACKUP_SPIN_LEFT);
+				} 
+                Thread.sleep(mPeriod);
 			}
 
 		}catch(Throwable t){
 			System.out.print("t2");
 		}
 	}
-	public float getLeftDistance(){ rangeFinderLeft.ping();
+	public float getLeftDistance(){ 
+        rangeFinderLeft.ping();
 		return rangeFinderLeft.getDistanceInches();
 	}
-	public float getRightDistance(){ rangeFinderRight.ping();
+	public float getRightDistance(){ 
+        rangeFinderRight.ping();
 		return rangeFinderRight.getDistanceInches();
 	}
 }
