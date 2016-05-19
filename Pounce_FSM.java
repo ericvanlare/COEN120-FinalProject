@@ -8,6 +8,11 @@
  */
 public class Pounce_FSM implements Runnable {
     
+    //Physical Peripherals
+    Navigator mNavigator;
+    Localizer mLocalizer;
+    Pose mCurrentPose;
+    
     //STATE VARIABLES
 	private volatile int currentState;
 	final int SIT = 0;
@@ -20,6 +25,11 @@ public class Pounce_FSM implements Runnable {
 	final int IR_LEFT = 0;
 	final int IR_RIGHT = 1;
     final int STOP_BUTTON = 2;
+    
+    public Pounce_FSM(Navigator navigator, Localizer localizer){
+        mNavigator = navigator;
+        mLocalizer = localizer;
+    }
     
 
     public void run(){
@@ -55,5 +65,7 @@ public class Pounce_FSM implements Runnable {
         }
         currentEvent = event;//current event always changes
     }
+    
+    //Activity and behavior methods will be defined here
 
 }

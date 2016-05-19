@@ -31,6 +31,7 @@ public class IRSensor extends Thread {
     private SharpGP2D12 rangeFinderLeft; 
     private SharpGP2D12 rangeFinderRight;
     
+    //possibly add another variable to switch between pounce and home?
     public IRSensor(BlockingQueue buf, float threshold, int priority, int period){
         mBuf = buf; 
         mThreshold = threshold; 

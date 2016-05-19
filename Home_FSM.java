@@ -63,7 +63,6 @@ public class Home_FSM implements Runnable {
 					} catch (InterruptException e) {}
 					break;
 			}
-            
 		}
 	}
     
@@ -80,4 +79,6 @@ public class Home_FSM implements Runnable {
         }
         currentEvent = event;//current event always changes
     }
+    
+    //Activity and behavior methods will be defined here
 }
