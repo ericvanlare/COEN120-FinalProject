@@ -109,29 +109,9 @@ public class Home_FSM implements Runnable {
     }
     
     private void reverse(float distance){
-        if(mCurrentPose.heading == 0){
-            mNavigator.moveTo(mCurrentPose.X-distance, mCurrentPose.Y, true);
-        }else if(mCurrentPose.heading == PI){
-            mNavigator.moveTo(mCurrentPose.X+distance, mCurrentPose.Y, true);
-        }else if(mCurrentPose.heading < PI){ //y is subtracted
-            //figure out x
-            if((mCurrentPose.heading > 0) && (mCurrentPose.heading < PI_OVER_2)){
-                //first quadrant, subtract x
-                mNavigator.moveTo(mCurrentPose.X-distance, mCurrentPose.Y-distance, true);
-            }else if((mCurrentPose.heading > PI_OVER_2) && (mCurrentPose.heading < PI)){
-                //second quadrant, add x
-                mNavigator.moveTo(mCurrentPose.X+distance, mCurrentPose.Y-distance, true);
-            }
-        }else if(mCurrentPose.heading > PI){//y is added
-            //figure out x
-            if((mCurrentPose.heading > PI) && (mCurrentPose.heading < THREE_PI_OVER_2)){
-                //third quadrant, add x
-                mNavigator.moveTo(mCurrentPose.X+distance, mCurrentPose.Y+distance, true);
-            }else if((mCurrentPose.heading > THREE_PI_OVER_2) && (mCurrentPose.heading < TWO_PI)){
-                //fourth quadrant, subtract x
-                mNavigator.moveTo(mCurrentPose.X-distance, mCurrentPose.Y+distance, true);
-            }
-        }
+        float rev_x = mCurrentPose.x - (distance * (float)Math.cos(((double)mCurrentPose.heading)));
+        float rev_y = mCurrentPose.y - (distance * (float)Math.sin(((double)mCurrentPose.heading)));
+        mNavigator.moveTo(rev_x,rev_y, true);
     }
     
     public void backupAndSpinLeft(){
