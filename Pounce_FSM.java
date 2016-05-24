@@ -29,6 +29,8 @@ public class Pounce_FSM implements Runnable {
     public Pounce_FSM(Navigator navigator, Localizer localizer){
         mNavigator = navigator;
         mLocalizer = localizer;
+        
+        setDaemon(true);
     }
     
 
