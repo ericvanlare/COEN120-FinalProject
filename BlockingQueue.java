@@ -1,3 +1,5 @@
+/* Should we make this circular?*/
+
 public class BlockingQueue {
 	private int[] list;
 	private int maxSize = 10;

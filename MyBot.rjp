@@ -34,3 +34,7 @@ OpenFile=Rotate.java
 OpenFile=NavigateSquare.java
 OpenFile=NavigateFigureEight.java
 OpenFile=NavigateTriangle.java
+OpenFile=Home_FSM.java
+OpenFile=Home_Behavior.java
+OpenFile=IRSensor.java
+OpenFile=BlockingQueue.java

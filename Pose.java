@@ -8,4 +8,10 @@ public class Pose {
 		this.y = y;
 		this.heading = heading;
 	}
+    
+    public boolean equals(Pose p){
+        if((x != p.x)||(y != p.y)||(heading != p.heading))
+            return false;
+        return true;
+    }   
 }

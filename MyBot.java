@@ -37,6 +37,7 @@ public class MyBot {
 												Thread.MAX_PRIORITY - 2, 50);
  
 			Runnable functions[] = new Runnable[] {
+				new Home_Behavior(navigator, localizer),
 				new NavigateTriangle(navigator, 16.0f),
 				new NavigateSquare(navigator, 16.0f),
 				new NavigateFigureEight(navigator, 48.0f, 32.0f),
