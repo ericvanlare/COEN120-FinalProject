@@ -8,6 +8,11 @@ import com.ridgesoft.robotics.ShaftEncoder;
 public class MyBot {
     public static void main(String[] args) {
         try {
+			//variables to communicate between threads and IR setup logistics
+	    	final int SAMPLE_RATE = 200;//milliseconds 1 second is too much, 0.5 a second still seems too much
+	    	final float SENSOR_THRESHOLD = 5.0f;//inches :better farther than closer, especially if these things are sensitive
+	    	BlockingQueue buffer = new BlockingQueue();
+
             Display display = IntelliBrain.getLcdDisplay();
             PushButton startButton = IntelliBrain.getStartButton();
             PushButton stopButton = IntelliBrain.getStopButton();
@@ -35,23 +40,15 @@ public class MyBot {
 												localizer,
 												8, 6, 25.0f, 0.5f, 0.08f,
 												Thread.MAX_PRIORITY - 2, 50);
+
+			Home_FSM hFSM = new Home_FSM(navigator, localizer);
+			//hFSM.setDaemon(true);
+			Thread irs = new Thread (new IRSensor(buffer, SENSOR_THRESHOLD, Thread.MAX_PRIORITY-1, SAMPLE_RATE));
+			irs.setDaemon(true);
+			irs.start();
  
 			Runnable functions[] = new Runnable[] {
-				new Home_Behavior(navigator, localizer),
-				new NavigateTriangle(navigator, 16.0f),
-				new NavigateSquare(navigator, 16.0f),
-				new NavigateFigureEight(navigator, 48.0f, 32.0f),
-				new Rotate(navigator),
-				new NavigateForward(navigator, 100.0f),
-				new TimedForward(leftServo, rightServo, (DirectionListener)leftEncoder, (DirectionListener)rightEncoder, 10000),
-				new TimedRotate(leftServo, rightServo, (DirectionListener)leftEncoder, (DirectionListener)rightEncoder, 1800),
-				new TestEncoder(leftWheelInput, leftServo, startButton),
-                new DoBeep(),
-                new DoNothing(),
-                new Forward5sec(),
-                new Clockwise(),
-                new AntiClockwise(),
-                new DisplayName(),
+				new Home_Behavior(hFSM, buffer),
             };
             startButton.waitReleased();
             IntelliBrain.setTerminateOnStop(false);
