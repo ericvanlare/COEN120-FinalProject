@@ -22,25 +22,18 @@ public class Home_FSM implements Runnable {
 	final static int FORWARD = 3;
 
 	//EVENT VARIABLES
-	public volatile int currentEvent;
 	final static int IR_LEFT = 0;
 	final static int IR_RIGHT = 1;
-	final static int NULL = 2;
-    
-    //AVOIDANCE VARS
-    final float BACKUP_LENGTH = 10;
-    final float FORWARD_LENGTH = 10;
 
 	public Home_FSM(Navigator navigator, Localizer localizer) {
         //setting physical peripheral control and destination
         mNavigator = navigator;
         mLocalizer = localizer;
         mCurrentPose = mLocalizer.getPose();//get current pos
-        mHome = new Pose(0,20,0);
+        mHome = new Pose(0,40,0);
         
         //setting initial state and event
 		currentState = NAVIGATE;
-		currentEvent = NULL;
 	}
 
 	public void run() {
@@ -48,26 +41,39 @@ public class Home_FSM implements Runnable {
 			switch (currentState) {
 				case NAVIGATE:
                     //go towards the end point
-                    mNavigator.moveTo(mHome.x, mHome.y, true);//float x, float y, boolean wait
+                    mNavigator.moveTo(mHome.x, mHome.y, false);//float x, float y, boolean wait
+					//System.out.println("NAVIGATE");
+					//try {
+					//	Thread.sleep(1000);
+					//} catch (InterruptedException e) {}
 					break;
+
 				case BACKUP_SPIN_LEFT:
                     //avoid the obstacle that is on your left
 					reverse(10.0f);
-					currentState = FORWARD;
-					break;
-				case BACKUP_SPIN_RIGHT:
-                    //avoid the obstacle that is on your right
-					reverse(10.0f);
+					//System.out.println("BACK_LEFT");
 					try {
-						Thread.sleep(500);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
 					currentState = FORWARD;
 					break;
+
+				case BACKUP_SPIN_RIGHT:
+                    //avoid the obstacle that is on your right
+					reverse(10.0f);
+					//System.out.println("BACK_RIGHT");
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {}
+					currentState = FORWARD;
+					break;
+
 				case FORWARD:
                     //moving forward to make the avoidance procedure more effect
 					forward(7.0f);
+					//System.out.println("FORWARD");
 					try {
-						Thread.sleep(500);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
 					currentState = NAVIGATE;
                     break;
@@ -76,19 +82,24 @@ public class Home_FSM implements Runnable {
 	}
     
     public synchronized void dispatch(int event){
+
         switch(event){
-            case IR_LEFT:
-                //change to backup left routine
-				currentState = BACKUP_SPIN_LEFT;
-                break;
-            case IR_RIGHT:
-                //change to backup right routine
-                currentState = BACKUP_SPIN_RIGHT;
-                break;
+           	case IR_LEFT:
+               	//change to backup left routine
+				if(currentState == NAVIGATE){
+					currentState = BACKUP_SPIN_LEFT;
+				}
+               	break;
+
+           	case IR_RIGHT:
+               	//change to backup right routine
+				if(currentState == NAVIGATE){
+               		currentState = BACKUP_SPIN_RIGHT;
+				}
+               	break;
 			default:
 				break;
         }
-        currentEvent = event;//current event always changes
     }
     
     private void reverse(float distance){

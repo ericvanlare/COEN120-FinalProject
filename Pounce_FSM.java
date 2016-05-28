@@ -18,15 +18,19 @@ public class Pounce_FSM implements Runnable {
 	final int SIT = 0;
     final int POUNCE_LEFT = 1;
     final int POUNCE_RIGHT = 2;
+    final int END = 3;
+
+	//EVENT VARIABLES
+	public volatile int currentEvent;
+	final int IR_LEFT = 0;
+	final int IR_RIGHT = 1;
+    final int STOP_BUTTON = 2;
     
     public Pounce_FSM(Navigator navigator, Localizer localizer){
-        //setting physical peripheral control and destination
         mNavigator = navigator;
         mLocalizer = localizer;
-        mCurrentPose = mLocalizer.getPose();//get current pos
         
-        //setting initial state and event
-		currentState = WAIT;
+        setDaemon(true);
     }
     
 
@@ -38,15 +42,9 @@ public class Pounce_FSM implements Runnable {
                     break;
                 case POUNCE_LEFT:
                     //drive towards the left in direction of object
-					float rev_x = mCurrentPose.x + (10 * (float)Math.cos(((double)mCurrentPose.heading)+0.5));
-        			float rev_y = mCurrentPose.y + (10 * (float)Math.sin(((double)mCurrentPose.heading)+0.5));
-        			mNavigator.moveTo(rev_x,rev_y, true);
                     break;
                 case POUNCE_RIGHT:
                     //drive towards the right direction of object
-					float rev_x = mCurrentPose.x + (10 * (float)Math.cos(((double)mCurrentPose.heading)-0.5));
-        			float rev_y = mCurrentPose.y + (10 * (float)Math.sin(((double)mCurrentPose.heading)-0.5));
-        			mNavigator.moveTo(rev_x,rev_y, true);
                     break;
             }
         }
@@ -54,16 +52,18 @@ public class Pounce_FSM implements Runnable {
 
     public synchronized void dispatch(int event){
         switch(event){
+            case STOP_BUTTON:
+                //stop the robot program
+                currentState = END;
+                break;
             case IR_LEFT:
                 //change to backup left routine
-				currentState = POUNCE_LEFT;
+                currentState = POUNCE_LEFT;
                 break;
             case IR_RIGHT:
                 //change to backup right routine
                 currentState = POUNCE_RIGHT;
                 break;
-			default:
-				break;
         }
         currentEvent = event;//current event always changes
     }

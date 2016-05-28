@@ -2,23 +2,22 @@
 
 public class Pounce_Behavior implements Runnable{
 
-    //the one sensor threads we need
+    //the two sensor threads we need
+    private IRSensor irSensor;
     private Pounce_FSM pounceFSM;
-	private BlockingQueue mBuf;
-
-    public Pounce_Behavior(Pounce_FSM pFSM, BlockingQueue buffer){
-        mFSM = pFSM;
-		mBuf = buffer;
-		mThread = new Thread(mFSM);
-		mThread.start();
+    
+    //variables to communicate between threads and IR setup logistics
+    final int SAMPLE_RATE = 100;//milliseconds 1 second is too much, 0.5 a second still seems too much
+    final float SENSOR_THRESHOLD = 10.0f;//inches :better farther than closer, especially if these things are sensitive
+    private volatile BlockingQueue buffer;
+    
+    public Pounce_Behavior(){
+        buffer = new BlockingQueue();
+        //need a new ir sensor thread for pounce
     }
     
     public void run(){
-        while(true) {
-			int e = mBuf.get();
-			//System.out.println(e);
-            mFSM.dispatch(e);//changes the event in the home FSM
-		}
+        
     }
     
     public String toString() {
