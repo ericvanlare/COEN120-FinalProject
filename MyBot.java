@@ -39,7 +39,7 @@ public class MyBot {
 												leftMotor, rightMotor,
 												localizer,
 												8, 6, 25.0f, 0.5f, 0.08f,
-												Thread.MAX_PRIORITY - 2, 50);
+												Thread.MAX_PRIORITY - 5, 50);//originally -2, but I think it is getting in the way of the IR sensor
 
 			Home_FSM hFSM = new Home_FSM(navigator, localizer);
 			Thread irs = new Thread (new IRSensor(buffer, SENSOR_THRESHOLD, Thread.MAX_PRIORITY-2, SAMPLE_RATE));
