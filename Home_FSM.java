@@ -16,36 +16,27 @@ public class Home_FSM implements Runnable {
 
 	//STATE VARIABLES
 	private volatile int currentState;
-	final int NAVIGATE = 0;
-	final int BACKUP_SPIN_LEFT = 1;
-	final int BACKUP_SPIN_RIGHT = 2;
-	final int FORWARD = 3;
-    final int STOP = 4;
+	final static int NAVIGATE = 0;
+	final static int BACKUP_SPIN_LEFT = 1;
+	final static int BACKUP_SPIN_RIGHT = 2;
+	final static int FORWARD = 3;
 
 	//EVENT VARIABLES
 	public volatile int currentEvent;
-	final int IR_LEFT = 0;
-	final int IR_RIGHT = 1;
-	final int NULL = 2;
-    final int COMPLETE = 3;
-    
-    //AVOIDANCE VARS
-    final float BACKUP_LENGTH = 10
-    final float FORWARD_LENGTH = 10
+	final static int IR_LEFT = 0;
+	final static int IR_RIGHT = 1;
+	final static int NULL = 2;
 
-	public Home_FSM(Navigator navigator, Localizer localizer, Pose home) {
+	public Home_FSM(Navigator navigator, Localizer localizer) {
         //setting physical peripheral control and destination
         mNavigator = navigator;
         mLocalizer = localizer;
         mCurrentPose = mLocalizer.getPose();//get current pos
-        mHome = home;
+        mHome = new Pose(0,40,0);
         
         //setting initial state and event
 		currentState = NAVIGATE;
 		currentEvent = NULL;
-        
-        //setting qualitites of the thread
-        setDaemon(true);
 	}
 
 	public void run() {
@@ -53,35 +44,30 @@ public class Home_FSM implements Runnable {
 			switch (currentState) {
 				case NAVIGATE:
                     //go towards the end point
-                    mNavigator.moveTo(home.X, home.Y, true);//float x, float y, boolean wait
+                    mNavigator.moveTo(mHome.x, mHome.y, true);//float x, float y, boolean wait
 					break;
 				case BACKUP_SPIN_LEFT:
                     //avoid the obstacle that is on your left
-					//backup();
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptException e) {}
+					reverse(10.0f);
+					currentState = FORWARD;
 					break;
 				case BACKUP_SPIN_RIGHT:
                     //avoid the obstacle that is on your right
-					//backup();
+					reverse(10.0f);
 					try {
-						Thread.sleep(1000);
-					} catch (InterruptException e) {}
+						Thread.sleep(500);
+					} catch (InterruptedException e) {}
+					currentState = FORWARD;
 					break;
 				case FORWARD:
                     //moving forward to make the avoidance procedure more effect
-					//forward();
+					//forward(7.0f);
 					try {
-						Thread.sleep(1000);
-					} catch (InterruptException e) {}
-					break;
-                case STOP:
-                    //stop all moving activities
-                    mNavigator.stop();
+						Thread.sleep(500);
+					} catch (InterruptedException e) {}
+					currentState = NAVIGATE;
                     break;
 			}
-            mCurrentPose = mLocalizer.getPose();//updating the current position
 		}
 	}
     
@@ -89,28 +75,27 @@ public class Home_FSM implements Runnable {
         switch(event){
             case IR_LEFT:
                 //change to backup left routine
-                currentState = BACKUP_SPIN_LEFT;
+				currentState = BACKUP_SPIN_LEFT;
                 break;
             case IR_RIGHT:
                 //change to backup right routine
                 currentState = BACKUP_SPIN_RIGHT;
                 break;
-            case COMPLETE:
-                //robot is at the destination it needs to be at
-                currentState = STOP;
-                break;
+			default:
+				break;
         }
         currentEvent = event;//current event always changes
-    }
-    
-    //Activity and behavior methods will be defined here
-    public synchronized void getCurrentPose(){
-        return mCurrentPose;
     }
     
     private void reverse(float distance){
         float rev_x = mCurrentPose.x - (distance * (float)Math.cos(((double)mCurrentPose.heading)));
         float rev_y = mCurrentPose.y - (distance * (float)Math.sin(((double)mCurrentPose.heading)));
+        mNavigator.moveTo(rev_x,rev_y, true);
+    }
+
+	private void forward(float distance){
+        float rev_x = mCurrentPose.x + (distance * (float)Math.cos(((double)mCurrentPose.heading)));
+        float rev_y = mCurrentPose.y + (distance * (float)Math.sin(((double)mCurrentPose.heading)));
         mNavigator.moveTo(rev_x,rev_y, true);
     }
     

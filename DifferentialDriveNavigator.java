@@ -11,7 +11,7 @@ public class DifferentialDriveNavigator extends Thread
 	private static final int GO = 1;
 	private static final int MOVE_TO = 2;
 	private static final int ROTATE = 3;
-    
+
 	private Motor mLeftMotor;
 	private Motor mRightMotor;
 	private Localizer mLocalizer;

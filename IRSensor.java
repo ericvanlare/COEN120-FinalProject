@@ -11,16 +11,7 @@ import com.ridgesoft.robotics.sensors.SharpGP2D12;
  
     this would work only for home/might need to make another IR class for pounce based on this 
  
- 	//STATE VARIABLES
-	final int NAVIGATE = 0;
-	final int BACKUP_SPIN_LEFT = 1;
-	final int BACKUP_SPIN_RIGHT = 2;
-	final int FORWARD = 3;
-
-	//EVENT VARIABLES
-	final int IR_LEFT = 0;
-	final int IR_RIGHT = 1;
-	final int NULL = 2;
+ 	
  
  *  
  */ 
@@ -42,6 +33,7 @@ public class IRSensor extends Thread {
             rangeFinderRight = new
             SharpGP2D12(IntelliBrain.getAnalogInput(2), null);
         }catch(Exception e){
+        	e.printStackTrace();
 		  System.out.print("t1");
 		} 
         setPriority(priority); 
@@ -55,17 +47,20 @@ public class IRSensor extends Thread {
                 float distanceLeft = rangeFinderLeft.getDistanceInches();
 				rangeFinderRight.ping(); 
                 float distanceRight = rangeFinderRight.getDistanceInches();
-				if(distanceLeft < mThreshold && distanceLeft > 0){ 
+				if(distanceLeft < mThreshold && distanceLeft > 0){
+					//System.out.println("Left");
                     mBuf.put(Home_FSM.BACKUP_SPIN_RIGHT); 
                 }
-                
 				if(distanceRight < mThreshold && distanceRight > 0){
+					//System.out.println("Right");
 					mBuf.put(Home_FSM.BACKUP_SPIN_LEFT);
-				} 
+				}
+
                 Thread.sleep(mPeriod);
 			}
 
 		}catch(Throwable t){
+			t.printStackTrace();
 			System.out.print("t2");
 		}
 	}
