@@ -9,8 +9,8 @@ public class MyBot {
     public static void main(String[] args) {
         try {
 			//variables to communicate between threads and IR setup logistics
-	    	final int SAMPLE_RATE = 100;//milliseconds 1 second is too much, 0.5 a second still seems too much
-	    	final float SENSOR_THRESHOLD = 20.0f;//inches :better farther than closer, especially if these things are sensitive
+	    	final int SAMPLE_RATE = 500;//milliseconds 1 second is too much, 0.5 a second still seems too much
+	    	final float SENSOR_THRESHOLD = 10.0f;//inches :better farther than closer, especially if these things are sensitive
 	    	BlockingQueue buffer = new BlockingQueue();
 
             Display display = IntelliBrain.getLcdDisplay();
@@ -42,7 +42,7 @@ public class MyBot {
 												Thread.MAX_PRIORITY - 2, 50);
 
 			Home_FSM hFSM = new Home_FSM(navigator, localizer);
-			Thread irs = new Thread (new IRSensor(buffer, SENSOR_THRESHOLD, Thread.MAX_PRIORITY, SAMPLE_RATE));
+			Thread irs = new Thread (new IRSensor(buffer, SENSOR_THRESHOLD, Thread.MAX_PRIORITY-2, SAMPLE_RATE));
 			irs.setDaemon(true);
 			irs.start();
  

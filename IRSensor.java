@@ -21,6 +21,9 @@ public class IRSensor extends Thread {
     private int mPeriod;
     private SharpGP2D12 rangeFinderLeft; 
     private SharpGP2D12 rangeFinderRight;
+
+	final static int IR_LEFT = 0;
+	final static int IR_RIGHT = 1;
     
     //possibly add another variable to switch between pounce and home?
     public IRSensor(BlockingQueue buf, float threshold, int priority, int period){
@@ -49,11 +52,11 @@ public class IRSensor extends Thread {
                 float distanceRight = rangeFinderRight.getDistanceInches();
 				if(distanceLeft < mThreshold && distanceLeft > 0){
 					//System.out.println("Left");
-                    mBuf.put(Home_FSM.BACKUP_SPIN_RIGHT); 
+                    mBuf.put(IR_LEFT); 
                 }
 				if(distanceRight < mThreshold && distanceRight > 0){
 					//System.out.println("Right");
-					mBuf.put(Home_FSM.BACKUP_SPIN_LEFT);
+					mBuf.put(IR_RIGHT);
 				}
 
                 Thread.sleep(mPeriod);

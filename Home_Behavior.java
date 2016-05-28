@@ -1,12 +1,3 @@
-/* Thread run from MyBot.java to initialize Home Behavior*/
-
-/*
-NOTES: 
-    
-    Probably want to initialize a IR sensor in here and a Home FSM in here
-
-*/
-
 public class Home_Behavior implements Runnable {
     //the one sensor threads we need
     private Home_FSM mFSM;
@@ -24,7 +15,6 @@ public class Home_Behavior implements Runnable {
         //possibly while current position is not equal to destination
         while(true){
 			int e = mBuf.get();
-//			System.out.println(e);
             mFSM.dispatch(e);//changes the event in the home FSM
         }
     }
