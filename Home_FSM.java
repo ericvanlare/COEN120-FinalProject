@@ -42,7 +42,7 @@ public class Home_FSM implements Runnable {
 				case NAVIGATE:
                     //go towards the end point
                     mNavigator.moveTo(mHome.x, mHome.y, false);//float x, float y, boolean wait
-					//System.out.println("NAVIGATE");
+					System.out.println("NAVIGATE");
 					//try {
 					//	Thread.sleep(1000);
 					//} catch (InterruptedException e) {}
@@ -50,8 +50,9 @@ public class Home_FSM implements Runnable {
 
 				case BACKUP_SPIN_LEFT:
                     //avoid the obstacle that is on your left
-					reverse(10.0f);
-					//System.out.println("BACK_LEFT");
+					//reverse(10.0f);
+					mNavigator.stop();
+					System.out.println("BACKUP_SPIN_LEFT");
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
@@ -60,8 +61,9 @@ public class Home_FSM implements Runnable {
 
 				case BACKUP_SPIN_RIGHT:
                     //avoid the obstacle that is on your right
-					reverse(10.0f);
-					//System.out.println("BACK_RIGHT");
+					//reverse(10.0f);
+					mNavigator.stop();
+					System.out.println("BACKUP_SPIN_RIGHT");
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
@@ -70,11 +72,8 @@ public class Home_FSM implements Runnable {
 
 				case FORWARD:
                     //moving forward to make the avoidance procedure more effect
-					forward(7.0f);
-					//System.out.println("FORWARD");
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {}
+					//forward(7.0f);
+					System.out.println("FORWARD");
 					currentState = NAVIGATE;
                     break;
 			}
@@ -105,13 +104,13 @@ public class Home_FSM implements Runnable {
     private void reverse(float distance){
         float rev_x = mCurrentPose.x - (distance * (float)Math.cos(((double)mCurrentPose.heading)));
         float rev_y = mCurrentPose.y - (distance * (float)Math.sin(((double)mCurrentPose.heading)));
-        mNavigator.moveTo(rev_x,rev_y, true);
+        mNavigator.moveTo(rev_x,rev_y, false);
     }
 
 	private void forward(float distance){
         float rev_x = mCurrentPose.x + (distance * (float)Math.cos(((double)mCurrentPose.heading)));
         float rev_y = mCurrentPose.y + (distance * (float)Math.sin(((double)mCurrentPose.heading)));
-        mNavigator.moveTo(rev_x,rev_y, true);
+        mNavigator.moveTo(rev_x,rev_y, false);
     }
     
     public void backupAndSpinLeft(){

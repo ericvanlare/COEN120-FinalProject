@@ -51,11 +51,9 @@ public class IRSensor extends Thread {
 				rangeFinderRight.ping(); 
                 float distanceRight = rangeFinderRight.getDistanceInches();
 				if(distanceLeft < mThreshold && distanceLeft > 0){
-					//System.out.println("Left");
                     mBuf.put(IR_LEFT); 
                 }
 				if(distanceRight < mThreshold && distanceRight > 0){
-					//System.out.println("Right");
 					mBuf.put(IR_RIGHT);
 				}
 
