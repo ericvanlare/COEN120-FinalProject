@@ -18,6 +18,10 @@ public class Pounce_FSM implements Runnable {
 	final int SIT = 0;
     final int POUNCE_LEFT = 1;
     final int POUNCE_RIGHT = 2;
+
+	//EVENT VARIABLES
+	final static int IR_LEFT = 0;
+	final static int IR_RIGHT = 1;
     
     public Pounce_FSM(Navigator navigator, Localizer localizer){
         //setting physical peripheral control and destination
@@ -26,27 +30,33 @@ public class Pounce_FSM implements Runnable {
         mCurrentPose = mLocalizer.getPose();//get current pos
         
         //setting initial state and event
-		currentState = WAIT;
+		currentState = SIT;
     }
     
 
     public void run(){
-        while(currentState != END){
+		float rev_x, rev_y;
+        while(true){
             switch(currentState){
                 case SIT:
                     //sitting state
+					System.out.println("Sit");
                     break;
                 case POUNCE_LEFT:
                     //drive towards the left in direction of object
-					float rev_x = mCurrentPose.x + (10 * (float)Math.cos(((double)mCurrentPose.heading)+0.5));
-        			float rev_y = mCurrentPose.y + (10 * (float)Math.sin(((double)mCurrentPose.heading)+0.5));
+					System.out.println("Pounce Left");
+					rev_x = mCurrentPose.x + (5 * (float)Math.cos(((double)mCurrentPose.heading)+0.5));
+        			rev_y = mCurrentPose.y + (5 * (float)Math.sin(((double)mCurrentPose.heading)+0.5));
         			mNavigator.moveTo(rev_x,rev_y, true);
+					currentState = SIT;
                     break;
                 case POUNCE_RIGHT:
                     //drive towards the right direction of object
-					float rev_x = mCurrentPose.x + (10 * (float)Math.cos(((double)mCurrentPose.heading)-0.5));
-        			float rev_y = mCurrentPose.y + (10 * (float)Math.sin(((double)mCurrentPose.heading)-0.5));
+					System.out.println("Pounce Right");
+					rev_x = mCurrentPose.x + (5 * (float)Math.cos(((double)mCurrentPose.heading)-0.5));
+        			rev_y = mCurrentPose.y + (5 * (float)Math.sin(((double)mCurrentPose.heading)-0.5));
         			mNavigator.moveTo(rev_x,rev_y, true);
+					currentState = SIT;
                     break;
             }
         }
@@ -56,16 +66,17 @@ public class Pounce_FSM implements Runnable {
         switch(event){
             case IR_LEFT:
                 //change to backup left routine
-				currentState = POUNCE_LEFT;
+				if (currentState == SIT)
+					currentState = POUNCE_LEFT;
                 break;
             case IR_RIGHT:
                 //change to backup right routine
-                currentState = POUNCE_RIGHT;
+                if (currentState == SIT)
+					currentState = POUNCE_RIGHT;
                 break;
 			default:
 				break;
         }
-        currentEvent = event;//current event always changes
     }
     
     //Activity and behavior methods will be defined here

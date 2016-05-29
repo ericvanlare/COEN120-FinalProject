@@ -3,7 +3,8 @@
 public class Pounce_Behavior implements Runnable{
 
     //the one sensor threads we need
-    private Pounce_FSM pounceFSM;
+    private Pounce_FSM mFSM;
+	private Thread mThread;
 	private BlockingQueue mBuf;
 
     public Pounce_Behavior(Pounce_FSM pFSM, BlockingQueue buffer){
@@ -22,7 +23,7 @@ public class Pounce_Behavior implements Runnable{
     }
     
     public String toString() {
-        return "Pouncing Behavior"
+        return "Pouncing Behavior";
     }
 
 }
