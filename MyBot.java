@@ -41,11 +41,13 @@ public class MyBot {
 												8, 6, 25.0f, 0.5f, 0.08f,
 												Thread.MAX_PRIORITY-2, 300);//originally -2, but I think it is getting in the way of the IR sensor
 
+			Pounce_FSM pFSM = new Pounce_FSM(navigator, localizer);
 			Home_FSM hFSM = new Home_FSM(navigator, localizer);
 			IRSensor irs = new IRSensor(buffer, SENSOR_THRESHOLD, Thread.MAX_PRIORITY-1, SAMPLE_RATE);
  
 			Runnable functions[] = new Runnable[] {
 				new Home_Behavior(hFSM, buffer),
+				new Pounce_Behavior(pFSM, buffer),
             };
             startButton.waitReleased();
             IntelliBrain.setTerminateOnStop(false);

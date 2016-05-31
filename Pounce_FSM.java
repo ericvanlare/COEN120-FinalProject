@@ -8,6 +8,11 @@
  */
 public class Pounce_FSM implements Runnable {
     
+    private static final float PI = 3.14159f;
+	private static final float TWO_PI = PI * 2.0f;
+	private static final float PI_OVER_2 = PI / 2.0f;
+    private static final float THREE_PI_OVER_2 = (3*PI)/ 2.0f;
+
     //Physical Peripherals
     Navigator mNavigator;
     Localizer mLocalizer;
@@ -18,33 +23,49 @@ public class Pounce_FSM implements Runnable {
 	final int SIT = 0;
     final int POUNCE_LEFT = 1;
     final int POUNCE_RIGHT = 2;
-    final int END = 3;
 
 	//EVENT VARIABLES
-	public volatile int currentEvent;
-	final int IR_LEFT = 0;
-	final int IR_RIGHT = 1;
-    final int STOP_BUTTON = 2;
+	final static int IR_LEFT = 0;
+	final static int IR_RIGHT = 1;
     
     public Pounce_FSM(Navigator navigator, Localizer localizer){
+        //setting physical peripheral control and destination
         mNavigator = navigator;
         mLocalizer = localizer;
+        mCurrentPose = mLocalizer.getPose();//get current pos
         
-        setDaemon(true);
+        //setting initial state and event
+		currentState = SIT;
     }
     
 
     public void run(){
-        while(currentState != END){
+		float rev_x, rev_y;
+        while(true){
             switch(currentState){
                 case SIT:
                     //sitting state
+					//System.out.println("Sit");
                     break;
                 case POUNCE_LEFT:
                     //drive towards the left in direction of object
+					//System.out.println("Pounce Left");
+					//rev_x = mCurrentPose.x + (5 * (float)Math.cos(((double)mCurrentPose.heading)+0.5));
+        			//rev_y = mCurrentPose.y + (5 * (float)Math.sin(((double)mCurrentPose.heading)+0.5));
+        			//mNavigator.moveTo(rev_x,rev_y, true);
+					mNavigator.turnTo(mLocalizer.getPose().heading+(PI/6.0f), true);// turns 30 deg
+					mNavigator.forward();//pounce forward
+					currentState = SIT;
                     break;
                 case POUNCE_RIGHT:
                     //drive towards the right direction of object
+					//System.out.println("Pounce Right");
+					//rev_x = mCurrentPose.x + (5 * (float)Math.cos(((double)mCurrentPose.heading)-0.5));
+        			//rev_y = mCurrentPose.y + (5 * (float)Math.sin(((double)mCurrentPose.heading)-0.5));
+        			//mNavigator.moveTo(rev_x,rev_y, true);
+					mNavigator.turnTo(mLocalizer.getPose().heading-(PI/6.0f), true);// turns 30 deg
+					mNavigator.forward();//pounce forward
+					currentState = SIT;
                     break;
             }
         }
@@ -52,20 +73,19 @@ public class Pounce_FSM implements Runnable {
 
     public synchronized void dispatch(int event){
         switch(event){
-            case STOP_BUTTON:
-                //stop the robot program
-                currentState = END;
-                break;
             case IR_LEFT:
                 //change to backup left routine
-                currentState = POUNCE_LEFT;
+				if (currentState == SIT)
+					currentState = POUNCE_LEFT;
                 break;
             case IR_RIGHT:
                 //change to backup right routine
-                currentState = POUNCE_RIGHT;
+                if (currentState == SIT)
+					currentState = POUNCE_RIGHT;
                 break;
+			default:
+				break;
         }
-        currentEvent = event;//current event always changes
     }
     
     //Activity and behavior methods will be defined here

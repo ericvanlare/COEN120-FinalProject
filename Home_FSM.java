@@ -31,7 +31,7 @@ public class Home_FSM implements Runnable {
         mNavigator = navigator;
         mLocalizer = localizer;
         mCurrentPose = mLocalizer.getPose();//get current pos
-        mHome = new Pose(0,60,0);
+        mHome = new Pose(60,0,0);
         
         //setting initial state and event
 		currentState = NAVIGATE;
