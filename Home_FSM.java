@@ -46,20 +46,19 @@ public class Home_FSM implements Runnable {
 						mNavigator.moveTo(mHome.x, mHome.y, false);//float x, float y, boolean wait
 						navigating = true;
 					}
-					//System.out.println("NAVIGATE");
-					//try {
-					//	Thread.sleep(1000);
-					//} catch (InterruptedException e) {}
 					break;
 
 				case BACKUP_SPIN_LEFT:
                     //avoid the obstacle that is on your left
 					navigating = false;
-					mNavigator.backup(10.0f);
-					mNavigator.turnTo(mLocalizer.getPose().heading + PI_OVER_2, true);
-					//System.out.println("BACKUP_SPIN_LEFT");
+					mNavigator.stop();
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
+					} catch (InterruptedException e) {}
+					mNavigator.backup();
+					mNavigator.turnTo(mLocalizer.getPose().heading - PI_OVER_2, true);
+					try {
+						Thread.sleep(500);
 					} catch (InterruptedException e) {}
 					currentState = FORWARD;
 					break;
@@ -67,18 +66,21 @@ public class Home_FSM implements Runnable {
 				case BACKUP_SPIN_RIGHT:
                     //avoid the obstacle that is on your right
 					navigating = false;
-					mNavigator.backup(10.0f);
-					mNavigator.turnTo(mLocalizer.getPose().heading - PI_OVER_2, true);
-					//System.out.println("BACKUP_SPIN_RIGHT");
+					mNavigator.stop();
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
+					} catch (InterruptedException e) {}
+					mNavigator.backup();
+					mNavigator.turnTo(mLocalizer.getPose().heading + PI_OVER_2, true);
+					try {
+						Thread.sleep(500);
 					} catch (InterruptedException e) {}
 					currentState = FORWARD;
 					break;
 
 				case FORWARD:
                     //moving forward to make the avoidance procedure more effect
-					mNavigator.forward(10.0f);
+					mNavigator.forward();
 					//System.out.println("FORWARD");
 					try {
 						Thread.sleep(1000);

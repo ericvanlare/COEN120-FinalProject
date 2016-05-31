@@ -184,11 +184,11 @@ public class DifferentialDriveNavigator extends Thread
 		moveTo(x, y, false, listener);
 	}
 	
-	private synchronized void help_backup(float distance){
+	private synchronized void help_backup(){
 		mLeftMotor.setPower(Motor.MAX_REVERSE);
 		mRightMotor.setPower(Motor.MAX_REVERSE);
 		try{
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 		}catch(InterruptedException e){}
 		mRightMotor.brake();
 		mLeftMotor.brake();
@@ -197,11 +197,11 @@ public class DifferentialDriveNavigator extends Thread
 		updateListener(true, null);
 	}
 
-	public void backup(float distance){
-		help_backup(distance);
+	public void backup(){
+		help_backup();
 	}
 	
-	private synchronized void help_forward(float distance){
+	private synchronized void help_forward(){
 		mLeftMotor.setPower(Motor.MAX_FORWARD);
 		mRightMotor.setPower(Motor.MAX_FORWARD);
 		try{
@@ -214,8 +214,8 @@ public class DifferentialDriveNavigator extends Thread
 		updateListener(true, null);
 	}
 
-	public void forward(float distance){
-		help_forward(distance);
+	public void forward(){
+		help_forward();
 	}
 
 	public synchronized void turnTo(float heading, boolean wait,
