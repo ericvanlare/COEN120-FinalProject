@@ -20,6 +20,7 @@ public class Home_FSM implements Runnable {
 	final static int BACKUP_SPIN_LEFT = 1;
 	final static int BACKUP_SPIN_RIGHT = 2;
 	final static int FORWARD = 3;
+	private boolean navigating = false;
 
 	//EVENT VARIABLES
 	final static int IR_LEFT = 0;
@@ -30,7 +31,7 @@ public class Home_FSM implements Runnable {
         mNavigator = navigator;
         mLocalizer = localizer;
         mCurrentPose = mLocalizer.getPose();//get current pos
-        mHome = new Pose(0,40,0);
+        mHome = new Pose(0,60,0);
         
         //setting initial state and event
 		currentState = NAVIGATE;
@@ -41,7 +42,10 @@ public class Home_FSM implements Runnable {
 			switch (currentState) {
 				case NAVIGATE:
                     //go towards the end point
-                    mNavigator.moveTo(mHome.x, mHome.y, false);//float x, float y, boolean wait
+					if(!navigating){
+						mNavigator.moveTo(mHome.x, mHome.y, false);//float x, float y, boolean wait
+						navigating = true;
+					}
 					//System.out.println("NAVIGATE");
 					//try {
 					//	Thread.sleep(1000);
@@ -50,8 +54,10 @@ public class Home_FSM implements Runnable {
 
 				case BACKUP_SPIN_LEFT:
                     //avoid the obstacle that is on your left
-					reverse(10.0f);
-					//System.out.println("BACK_LEFT");
+					navigating = false;
+					mNavigator.backup(10.0f);
+					mNavigator.turnTo(mLocalizer.getPose().heading + PI_OVER_2, true);
+					//System.out.println("BACKUP_SPIN_LEFT");
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
@@ -60,8 +66,10 @@ public class Home_FSM implements Runnable {
 
 				case BACKUP_SPIN_RIGHT:
                     //avoid the obstacle that is on your right
-					reverse(10.0f);
-					//System.out.println("BACK_RIGHT");
+					navigating = false;
+					mNavigator.backup(10.0f);
+					mNavigator.turnTo(mLocalizer.getPose().heading - PI_OVER_2, true);
+					//System.out.println("BACKUP_SPIN_RIGHT");
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {}
@@ -70,7 +78,7 @@ public class Home_FSM implements Runnable {
 
 				case FORWARD:
                     //moving forward to make the avoidance procedure more effect
-					forward(7.0f);
+					mNavigator.forward(10.0f);
 					//System.out.println("FORWARD");
 					try {
 						Thread.sleep(1000);
@@ -116,8 +124,6 @@ public class Home_FSM implements Runnable {
     
     public void backupAndSpinLeft(){
         //backup portion
-        
-        
         //move straight 
         
         //if you want to turn left you must then turn right, since you have flipped yourself

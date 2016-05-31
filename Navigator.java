@@ -6,5 +6,7 @@ public interface Navigator {
 	public void turnTo(float heading,
 					NavigatorListener listener);
 	public void go(float heading);
+	public void backup(float distance);
+	public void forward(float distance);
 	public void stop();
 }

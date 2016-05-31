@@ -183,6 +183,40 @@ public class DifferentialDriveNavigator extends Thread
 						NavigatorListener listener) {
 		moveTo(x, y, false, listener);
 	}
+	
+	private synchronized void help_backup(float distance){
+		mLeftMotor.setPower(Motor.MAX_REVERSE);
+		mRightMotor.setPower(Motor.MAX_REVERSE);
+		try{
+			Thread.sleep(2000);
+		}catch(InterruptedException e){}
+		mRightMotor.brake();
+		mLeftMotor.brake();
+
+		// notify listener the operation is complete
+		updateListener(true, null);
+	}
+
+	public void backup(float distance){
+		help_backup(distance);
+	}
+	
+	private synchronized void help_forward(float distance){
+		mLeftMotor.setPower(Motor.MAX_FORWARD);
+		mRightMotor.setPower(Motor.MAX_FORWARD);
+		try{
+			Thread.sleep(2000);
+		}catch(InterruptedException e){}
+		mRightMotor.brake();
+		mLeftMotor.brake();
+
+		// notify listener the operation is complete
+		updateListener(true, null);
+	}
+
+	public void forward(float distance){
+		help_forward(distance);
+	}
 
 	public synchronized void turnTo(float heading, boolean wait,
 						NavigatorListener listener) {
