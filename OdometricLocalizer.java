@@ -70,6 +70,7 @@ public class OdometricLocalizer extends Thread implements Localizer {
 				mPreviousLeftCounts = leftCounts;
 				mPreviousRightCounts = rightCounts;
 				nextTime += mPeriod;
+
 				Thread.sleep(nextTime - System.currentTimeMillis());
 			}
 		} catch (Throwable t) {

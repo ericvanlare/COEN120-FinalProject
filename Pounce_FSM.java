@@ -44,25 +44,15 @@ public class Pounce_FSM implements Runnable {
         while(true){
             switch(currentState){
                 case SIT:
-                    //sitting state
-					//System.out.println("Sit");
                     break;
                 case POUNCE_LEFT:
                     //drive towards the left in direction of object
-					//System.out.println("Pounce Left");
-					//rev_x = mCurrentPose.x + (5 * (float)Math.cos(((double)mCurrentPose.heading)+0.5));
-        			//rev_y = mCurrentPose.y + (5 * (float)Math.sin(((double)mCurrentPose.heading)+0.5));
-        			//mNavigator.moveTo(rev_x,rev_y, true);
 					mNavigator.turnTo(mLocalizer.getPose().heading+(PI/6.0f), true);// turns 30 deg
 					mNavigator.forward();//pounce forward
 					currentState = SIT;
                     break;
                 case POUNCE_RIGHT:
                     //drive towards the right direction of object
-					//System.out.println("Pounce Right");
-					//rev_x = mCurrentPose.x + (5 * (float)Math.cos(((double)mCurrentPose.heading)-0.5));
-        			//rev_y = mCurrentPose.y + (5 * (float)Math.sin(((double)mCurrentPose.heading)-0.5));
-        			//mNavigator.moveTo(rev_x,rev_y, true);
 					mNavigator.turnTo(mLocalizer.getPose().heading-(PI/6.0f), true);// turns 30 deg
 					mNavigator.forward();//pounce forward
 					currentState = SIT;

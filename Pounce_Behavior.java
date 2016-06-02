@@ -15,10 +15,19 @@ public class Pounce_Behavior implements Runnable{
     
     public void run(){
 		mThread.start();
+
+		int count = 0;
+		long tStart,tEnd;
         while(true) {
 			int e = mBuf.get();
-			//System.out.println(e);
+			tStart = System.currentTimeMillis();
             mFSM.dispatch(e);//changes the event in the home FSM
+			tEnd = System.currentTimeMillis();
+			count++;
+			System.out.println("Execution: " + (tEnd-tStart));
+			System.out.println("Period: " + (tEnd-tStart));
+			System.out.println("Count: "+ count);
+			System.out.println();
 		}
     }
     

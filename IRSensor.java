@@ -45,6 +45,7 @@ public class IRSensor extends Thread {
 	}
 	public void run(){
         try{
+			
 			while(true){
 				rangeFinderLeft.ping(); 
                 float distanceLeft = rangeFinderLeft.getDistanceInches();
@@ -56,10 +57,8 @@ public class IRSensor extends Thread {
 				if(distanceRight < mThreshold && distanceRight > 0){
 					mBuf.put(IR_RIGHT);
 				}
-
                 Thread.sleep(mPeriod);
 			}
-
 		}catch(Throwable t){
 			t.printStackTrace();
 			System.out.print("t2");
